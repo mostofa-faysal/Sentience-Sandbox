@@ -1,4 +1,3 @@
-/* style.css - MINIMAL STYLING */
 :root {
     --primary: #4CAF50;
     --secondary: #2196F3;
@@ -42,7 +41,6 @@ body {
     margin-bottom: 20px;
 }
 
-/* Ethics Screen */
 .principles {
     margin: 30px 0;
 }
@@ -62,7 +60,6 @@ body {
     color: var(--primary);
 }
 
-/* Scenario Cards */
 .scenarios {
     display: grid;
     gap: 20px;
@@ -99,7 +96,6 @@ body {
     margin-top: 10px;
 }
 
-/* Progress Bar */
 #progress-bar {
     height: 6px;
     background: #e0e0e0;
@@ -115,7 +111,6 @@ body {
     transition: width 0.3s;
 }
 
-/* Buttons */
 button {
     background: var(--primary);
     color: white;
@@ -126,6 +121,7 @@ button {
     font-size: 16px;
     font-weight: 600;
     transition: all 0.3s;
+    margin: 5px;
 }
 
 button:disabled {
@@ -139,7 +135,6 @@ button:hover:not(:disabled) {
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -167,7 +162,6 @@ button:hover:not(:disabled) {
     overflow-y: auto;
 }
 
-/* Affected People */
 .person-card {
     display: flex;
     align-items: center;
@@ -182,7 +176,6 @@ button:hover:not(:disabled) {
     margin-right: 15px;
 }
 
-/* Footer */
 footer {
     text-align: center;
     color: white;
@@ -191,7 +184,102 @@ footer {
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
+.demo-banner {
+    background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1001;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+.step-content {
+    margin: 20px 0;
+}
+
+.step-description {
+    margin: 15px 0;
+    color: #555;
+}
+
+.step-task {
+    background: #f0f7ff;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.email-preview {
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--secondary);
+    margin: 15px 0;
+    font-family: monospace;
+}
+
+.options label {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.options label:hover {
+    background: #e9ecef;
+}
+
+.decision-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.decision-btn {
+    flex: 1;
+    min-width: 150px;
+}
+
+.decision-btn:nth-child(2) {
+    background: var(--secondary);
+}
+
+.decision-btn:nth-child(3) {
+    background: var(--danger);
+}
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+.warning {
+    color: #e74c3c;
+    background: #ffeaea;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 15px 0;
+}
+
+.person-info small {
+    color: #666;
+    font-size: 0.9em;
 }
