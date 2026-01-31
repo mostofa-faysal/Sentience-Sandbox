@@ -1,0 +1,144 @@
+<!-- index.html - COMPLETE PROTOTYPE IN ONE FILE -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethical Sandbox MVP</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- ETHICS AGREEMENT (First Screen) -->
+        <div id="ethics-screen" class="screen active">
+            <div class="card">
+                <h1><i class="fas fa-shield-alt"></i> Ethical Sandbox</h1>
+                <div class="principles">
+                    <div class="principle">
+                        <i class="fas fa-heart"></i>
+                        <h3>Feel the consequence before you cause harm</h3>
+                    </div>
+                    <div class="principle">
+                        <i class="fas fa-users"></i>
+                        <h3>Consider who might be affected</h3>
+                    </div>
+                    <div class="principle">
+                        <i class="fas fa-redo"></i>
+                        <h3>Mistakes are expected - learn safely</h3>
+                    </div>
+                </div>
+                
+                <div class="agreement">
+                    <label>
+                        <input type="checkbox" id="agree-checkbox">
+                        I understand and agree to these principles
+                    </label>
+                    <button id="agree-btn" disabled>Enter with Awareness</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCENARIO SELECTION -->
+        <div id="scenario-screen" class="screen">
+            <div class="card">
+                <h2>Choose Your Learning Path</h2>
+                <div class="scenarios">
+                    <div class="scenario-card" data-scenario="phishing">
+                        <i class="fas fa-envelope"></i>
+                        <h3>Phishing Ethics</h3>
+                        <p>Generate phishing emails and see who might be affected</p>
+                        <span class="difficulty">Beginner</span>
+                    </div>
+                    <div class="scenario-card" data-scenario="bias">
+                        <i class="fas fa-balance-scale"></i>
+                        <h3>AI Bias Check</h3>
+                        <p>Test an AI hiring tool for unfairness</p>
+                        <span class="difficulty">Intermediate</span>
+                    </div>
+                    <div class="scenario-card" data-scenario="data-sovereignty">
+                        <i class="fas fa-handshake"></i>
+                        <h3>Data Sovereignty</h3>
+                        <p>Navigate Indigenous data consent principles</p>
+                        <span class="difficulty">Advanced</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCENARIO PLAYER -->
+        <div id="player-screen" class="screen">
+            <div class="card">
+                <div id="scenario-header">
+                    <h2 id="scenario-title">Phishing Ethics</h2>
+                    <div id="progress-bar"><div id="progress-fill"></div></div>
+                </div>
+                
+                <div id="scenario-content">
+                    <!-- Dynamic content goes here -->
+                </div>
+                
+                <div id="controls">
+                    <button id="back-btn"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button id="next-btn">Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONSEQUENCE VISUALIZATION -->
+        <div id="consequence-modal" class="modal">
+            <div class="modal-content">
+                <h3><i class="fas fa-exclamation-triangle"></i> Impact Visualization</h3>
+                <div id="affected-people"></div>
+                <div class="decision-buttons">
+                    <button class="decision-btn" data-choice="proceed">Proceed (I understand)</button>
+                    <button class="decision-btn" data-choice="modify">Modify Approach</button>
+                    <button class="decision-btn" data-choice="abandon">Try Different</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- REFLECTION JOURNAL -->
+        <div id="reflection-modal" class="modal">
+            <div class="modal-content">
+                <h3><i class="fas fa-book"></i> Reflection Journal</h3>
+                <p id="reflection-prompt">What surprised you about who was affected?</p>
+                <textarea id="reflection-text" rows="4"></textarea>
+                <button id="submit-reflection">Save Reflection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER - Show "Built in 24h" -->
+    <footer>
+        <p>🚀 Built in 24 hours • RRC Polytech Ethical Sandbox MVP • Zero Budget</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+<!-- Add to index.html - DEMO MODE BANNER -->
+<div class="demo-banner">
+    <i class="fas fa-rocket"></i> 
+    <strong>24-HOUR SPRINT PROTOTYPE</strong> | 
+    Zero Budget | 
+    All data stored in your browser | 
+    <button onclick="showDemoStats()">Show Demo Stats</button>
+</div>
+
+<style>
+.demo-banner {
+    background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 14px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+</style>
+</html>
