@@ -1,4 +1,3 @@
-// script.js - COMPLETE LOGIC
 document.addEventListener('DOMContentLoaded', function() {
     // State management
     let currentScreen = 'ethics';
@@ -6,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentStep = 0;
     let reflections = JSON.parse(localStorage.getItem('reflections') || '[]');
     
-    // Scenario data (static - no backend needed)
+    // Scenario data
     const scenarios = {
         phishing: {
             title: 'Phishing Ethics',
@@ -45,10 +44,52 @@ document.addEventListener('DOMContentLoaded', function() {
                     content: 'An AI hiring tool is being evaluated',
                     task: 'Check for bias in these resumes',
                     options: ['Resume A: "John", Ivy League', 'Resume B: "Maria", State College']
+                },
+                {
+                    title: 'Results',
+                    content: 'The AI shows bias: 80% chance of hiring John, 40% for Maria',
+                    task: 'What action should be taken?',
+                    options: ['Ignore - AI is efficient', 'Retrain with more data', 'Audit for fairness', 'Pause deployment']
+                },
+                {
+                    title: 'Reflection',
+                    content: 'How might this affect real job seekers?',
+                    task: 'Share your thoughts',
+                    showReflection: true
+                }
+            ]
+        },
+        'data-sovereignty': {
+            title: 'Data Sovereignty',
+            steps: [
+                {
+                    title: 'The Situation',
+                    content: 'A tech company wants to use Indigenous health data for an AI project',
+                    task: 'What questions should be asked first?',
+                    options: ['Who owns the data?', 'What consent exists?', 'How will community benefit?', 'All of the above']
+                },
+                {
+                    title: 'Cultural Context',
+                    content: 'Indigenous data is collective, not just individual',
+                    task: 'What principle applies?',
+                    options: ['OCAP® (Ownership, Control, Access, Possession)', 'GDPR', 'HIPAA', 'Copyright']
+                },
+                {
+                    title: 'Reflection',
+                    content: 'Why is data sovereignty important for communities?',
+                    task: 'Share your thoughts',
+                    showReflection: true
                 }
             ]
         }
     };
+    
+    // People affected by phishing
+    const peopleData = [
+        { emoji: '👵', name: 'Maria, 72', story: 'Recently widowed, uses email to stay connected with family', impact: 'Would likely click and lose savings' },
+        { emoji: '👨‍🏫', name: 'David, 42', story: 'Teacher, works 60-hour weeks', impact: 'Would click during break, exposing student data' },
+        { emoji: '👩‍🍳', name: 'Lena, 35', story: 'Runs a family bakery', impact: 'Could bankrupt the business' }
+    ];
     
     // DOM Elements
     const ethicsScreen = document.getElementById('ethics-screen');
@@ -66,16 +107,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const affectedPeople = document.getElementById('affected-people');
     const reflectionModal = document.getElementById('reflection-modal');
     const reflectionText = document.getElementById('reflection-text');
-    
-    // Show affected people (static data - no API)
-    const peopleData = [
-        { emoji: '👵', name: 'Maria, 72', story: 'Recently widowed, uses email to stay connected with family', impact: 'Would likely click and lose savings' },
-        { emoji: '👨‍🏫', name: 'David, 42', story: 'Teacher, works 60-hour weeks', impact: 'Would click during break, exposing student data' },
-        { emoji: '👩‍🍳', name: 'Lena, 35', story: 'Runs a family bakery', impact: 'Could bankrupt the business' }
-    ];
+    const exportBtn = document.getElementById('export-btn');
     
     // Initialize
     showScreen('ethics');
+    
+    // Check if already agreed
+    if (localStorage.getItem('ethicsAgreed') === 'true') {
+        showScreen('scenario');
+    }
+    
+    // Log analytics
+    function logAnalytics(event, data) {
+        const logs = JSON.parse(localStorage.getItem('analytics') || '[]');
+        logs.push({
+            event,
+            data,
+            timestamp: new Date().toISOString()
+        });
+        localStorage.setItem('analytics', JSON.stringify(logs));
+        console.log(`📊 ${event}:`, data);
+    }
     
     // Event Listeners
     agreeCheckbox.addEventListener('change', function() {
@@ -83,23 +135,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     agreeBtn.addEventListener('click', function() {
-        // Save agreement to localStorage
         localStorage.setItem('ethicsAgreed', 'true');
         localStorage.setItem('agreementDate', new Date().toISOString());
+        logAnalytics('ethics_agreed', {});
         showScreen('scenario');
     });
     
-    // Scenario selection
     scenarioCards.forEach(card => {
         card.addEventListener('click', function() {
             currentScenario = this.dataset.scenario;
             currentStep = 0;
+            logAnalytics('scenario_started', { scenario: currentScenario });
             loadScenarioStep();
             showScreen('player');
         });
     });
     
-    // Navigation
     backBtn.addEventListener('click', function() {
         if (currentStep > 0) {
             currentStep--;
@@ -128,19 +179,19 @@ document.addEventListener('DOMContentLoaded', function() {
             loadScenarioStep();
         } else {
             // Scenario complete
+            logAnalytics('scenario_completed', { scenario: currentScenario });
             alert('🎉 Scenario complete! Check your reflections in the browser console (F12 -> Console)');
             showScreen('scenario');
         }
     });
     
-    // Decision buttons in consequence modal
     document.querySelectorAll('.decision-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const choice = this.dataset.choice;
             consequenceModal.classList.remove('active');
+            logAnalytics('decision_made', { choice });
             
             if (choice === 'modify' || choice === 'abandon') {
-                // Show reflection for ethical choice
                 showReflection(`Why did you choose to ${choice}?`);
             } else {
                 currentStep++;
@@ -149,7 +200,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Reflection submission
     document.getElementById('submit-reflection').addEventListener('click', function() {
         const reflection = {
             scenario: currentScenario,
@@ -160,8 +210,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         reflections.push(reflection);
         localStorage.setItem('reflections', JSON.stringify(reflections));
+        logAnalytics('reflection_saved', reflection);
         
-        // Show in console for demo
         console.log('📝 Reflection saved:', reflection);
         console.log('📊 All reflections:', reflections);
         
@@ -170,14 +220,32 @@ document.addEventListener('DOMContentLoaded', function() {
         loadScenarioStep();
     });
     
+    exportBtn.addEventListener('click', function() {
+        const portfolio = {
+            user: 'demo@rrc.ca',
+            ethicsAgreementDate: localStorage.getItem('agreementDate'),
+            reflections: JSON.parse(localStorage.getItem('reflections') || '[]'),
+            analytics: JSON.parse(localStorage.getItem('analytics') || '[]'),
+            generatedAt: new Date().toISOString()
+        };
+        
+        const dataStr = JSON.stringify(portfolio, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+        
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', `ethical-portfolio-${Date.now()}.json`);
+        linkElement.click();
+        
+        console.log('📁 Portfolio exported:', portfolio);
+        alert('Portfolio exported! Check your downloads folder.');
+    });
+    
     // Functions
     function showScreen(screenName) {
         currentScreen = screenName;
-        
-        // Hide all screens
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         
-        // Show selected screen
         if (screenName === 'ethics') {
             ethicsScreen.classList.add('active');
         } else if (screenName === 'scenario') {
@@ -193,11 +261,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (!step) return;
         
-        // Update UI
         scenarioTitle.textContent = scenario.title;
         progressFill.style.width = `${((currentStep + 1) / scenario.steps.length) * 100}%`;
         
-        // Build step content
         let html = `
             <div class="step-content">
                 <h3>${step.title}</h3>
@@ -207,7 +273,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
         `;
         
-        // Add step-specific content
         if (step.email) {
             html += `<div class="email-preview">${step.email}</div>`;
         }
@@ -221,10 +286,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         html += '</div>';
-        
         scenarioContent.innerHTML = html;
         
-        // Update button text
         if (currentStep === scenario.steps.length - 1) {
             nextBtn.innerHTML = 'Complete <i class="fas fa-check"></i>';
         } else {
@@ -233,7 +296,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function showConsequences() {
-        // Populate affected people
         let html = '<p class="warning"><i class="fas fa-exclamation-circle"></i> This is simulated, but real attacks affect real people:</p>';
         
         peopleData.forEach(person => {
@@ -266,42 +328,18 @@ document.addEventListener('DOMContentLoaded', function() {
         reflectionModal.classList.add('active');
     }
     
-    // Check if already agreed
-    if (localStorage.getItem('ethicsAgreed') === 'true') {
-        showScreen('scenario');
-    }
-});
-
-// Add to script.js - PORTFOLIO EXPORT
-function exportPortfolio() {
-    const portfolio = {
-        user: localStorage.getItem('userEmail') || 'demo@rrc.ca',
-        ethicsAgreementDate: localStorage.getItem('agreementDate'),
-        reflections: JSON.parse(localStorage.getItem('reflections') || '[]'),
-        analytics: JSON.parse(localStorage.getItem('analytics') || '[]'),
-        generatedAt: new Date().toISOString()
+    // Global function for demo stats
+    window.showDemoStats = function() {
+        const reflections = JSON.parse(localStorage.getItem('reflections') || '[]');
+        const analytics = JSON.parse(localStorage.getItem('analytics') || '[]');
+        
+        console.group('📊 DEMO STATISTICS');
+        console.log('Ethics Agreement:', localStorage.getItem('ethicsAgreed') ? 'Yes' : 'No');
+        console.log('Reflections:', reflections.length);
+        console.log('Analytics Events:', analytics.length);
+        console.log('Completed Scenarios:', analytics.filter(a => a.event === 'scenario_completed').length);
+        console.groupEnd();
+        
+        alert(`Demo Stats:\n• Reflections: ${reflections.length}\n• Analytics Events: ${analytics.length}\nCheck console (F12) for details.`);
     };
-    
-    const dataStr = JSON.stringify(portfolio, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
-    const exportFileDefaultName = `ethical-sandbox-portfolio-${Date.now()}.json`;
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-    
-    console.log('📁 Portfolio exported:', portfolio);
-    alert('Portfolio exported! Check your downloads folder.');
-}
-
-// Add button to UI
-const exportBtn = document.createElement('button');
-exportBtn.innerHTML = '<i class="fas fa-download"></i> Export Portfolio';
-exportBtn.style.position = 'fixed';
-exportBtn.style.bottom = '20px';
-exportBtn.style.right = '20px';
-exportBtn.style.zIndex = '1000';
-exportBtn.onclick = exportPortfolio;
-document.body.appendChild(exportBtn);
+});
